@@ -138,7 +138,7 @@ if submitted:
 
     with st.spinner('Creating your personalized plan...'):
         try:
-            API_ENDPOINT = "http://localhost:8000/generate_diet_plan"
+            API_ENDPOINT = "https://diet-planner-api.onrender.com/generate_diet_plan"
             response = requests.post(API_ENDPOINT, json=data, stream=True)
 
             if response.status_code == 200:

@@ -4,9 +4,16 @@ import time
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 
-# --- Get user_id from URL ---
-query_params = st.experimental_get_query_params()
-user_id = query_params.get("user_id", [None])[0]
+# --- FIRST Streamlit command: Set page config ---
+st.set_page_config(
+    page_title="NutriGen AI | Premium Diet Planner",
+    page_icon="🍽️",
+    layout="wide"
+)
+
+# --- Get user_id from URL (modern method) ---
+query_params = st.query_params
+user_id = query_params.get("user_id", None)
 
 # --- MongoDB Setup ---
 client = MongoClient("mongodb+srv://tetraPack:DFpAB4rJTOl4GVow@tetrapack.bp5jdmc.mongodb.net/")
@@ -27,15 +34,41 @@ def get_user_data(uid):
         st.error(f"Error fetching user data: {str(e)}")
         return None
 
-# --- Page Config ---
-st.set_page_config(
-    page_title="NutriGen AI | Premium Diet Planner",
-    page_icon="🍽️",
-    layout="wide"
-)
-
-# --- Custom CSS (Dark Mode) ---
-st.markdown("""<style> ... </style>""", unsafe_allow_html=True)  # Keep your original CSS here
+# --- Custom CSS (Dark Mode + Centering) ---
+st.markdown("""
+    <style>
+        body {
+            background-color: #0e1117;
+            color: #ffffff;
+        }
+        .stApp {
+            background-color: #0e1117;
+        }
+        .header-title {
+            text-align: center;
+            font-size: 3rem;
+            color: #fafafa;
+        }
+        .css-1v0mbdj edgvbvh3 {  /* Form input container override */
+            background-color: #1e1e1e !important;
+        }
+        .stTextInput > div > div > input {
+            background-color: #2c2c2c;
+            color: white;
+        }
+        .stSelectbox > div > div > div {
+            background-color: #2c2c2c;
+            color: white;
+        }
+        .stNumberInput input {
+            background-color: #2c2c2c;
+            color: white;
+        }
+        .css-1emrehy {
+            color: white;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 # --- Header ---
 st.markdown('<h1 class="header-title">NutriGen AI</h1><p style="text-align:center; color: #ccc;">Your personalized nutrition planner</p>', unsafe_allow_html=True)
@@ -66,7 +99,7 @@ with st.form("diet_plan_form"):
         goal = st.selectbox("Goal", ["weight-loss", "Weight maintenance", "Muscle gain", "Improve health"],
                             index=["weight-loss", "weight maintenance", "muscle gain", "improve health"].index(user_data.get("goal", "Weight loss").lower()) if user_data else 0)
         diet_pref = st.selectbox("Dietary Preference", ["No restrictions", "Vegetarian", "Vegan", "Gluten-free"],
-                                 index={"no restrictions": 0, "veg": 1, "vegan": 2, "gluten-free": 3}.get(user_data.get("diet_pref", "Vegetarian").lower(), 1) if user_data else 0)
+                                 index={"no restrictions": 0, "vegetarian": 1, "vegan": 2, "gluten-free": 3}.get(user_data.get("diet_pref", "Vegetarian").lower(), 1) if user_data else 0)
         allergies = st.text_input("Allergies", user_data.get("allergies", "") if user_data else "")
         medical_conditions = st.text_input("Medical Conditions", user_data.get("medical_conditions", "") if user_data else "")
         budget_level = st.selectbox("Budget Level", ["Low", "Medium", "High"],
@@ -99,7 +132,7 @@ if submitted:
 
     with st.spinner('Creating your personalized plan...'):
         try:
-            API_ENDPOINT = "http://localhost:8000/generate_diet_plan"  # Change this to your live Render URL
+            API_ENDPOINT = "https://diet-planner-api.onrender.com/generate_diet_plan"
             response = requests.post(API_ENDPOINT, json=data, stream=True)
 
             if response.status_code == 200:

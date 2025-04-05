@@ -3,3 +3,6 @@ uvicorn
 pydantic
 google-generativeai
 nest_asyncio
+streamlit
+pymongo
+requests
