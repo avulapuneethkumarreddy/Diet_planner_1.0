@@ -57,7 +57,23 @@ Budget Range: {data.budget_level}
 Number of Days: {data.days}
 
 Generate a {data.days}-day meal plan with breakfast, lunch, snacks, and dinner for each day. Include calorie estimates, macronutrient breakdowns (carbs, proteins, fats), and portion sizes. Ensure the meals align with the client's preferences.
-Do not include client details in the response. Just provide the structured meal plan."""
+Do not include client details in the response. Just provide the structured meal plan. Do not include anywhere that it is a sample diet_plan. Do not include any disclimers like Important Note: These calorie and macronutrient estimates are approximate.
+Actual values may vary depending on specific ingredients and portion sizes. It's recommended to use a food scale and tracking app for more accurate measurements. This plan provides a starting point; individual needs may vary. 
+Consult a registered dietitian or healthcare professional for personalized advice because i already know that and fully understand.
+
+Output format:
+{data.days}-Day Meal Plan:(this is a heading so make this bold and bigger)
+This plan provides approximately 1500-1600 calories per day, aiming for {data.goal}.
+
+Day1:
+.....(points wise)
+
+Day2:
+... (points wise)
+
+
+
+"""
 
     model = genai.GenerativeModel("gemini-1.5-flash")
     response = model.generate_content(prompt, stream=True)
