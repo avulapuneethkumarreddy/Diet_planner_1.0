@@ -49,18 +49,9 @@ st.markdown("""
             font-size: 3rem;
             color: #fafafa;
         }
-        .css-1v0mbdj edgvbvh3 {  /* Form input container override */
-            background-color: #1e1e1e !important;
-        }
-        .stTextInput > div > div > input {
-            background-color: #2c2c2c;
-            color: white;
-        }
+        .stTextInput > div > div > input,
+        .stNumberInput input,
         .stSelectbox > div > div > div {
-            background-color: #2c2c2c;
-            color: white;
-        }
-        .stNumberInput input {
             background-color: #2c2c2c;
             color: white;
         }
@@ -87,24 +78,30 @@ with st.form("diet_plan_form"):
     with col1:
         st.subheader("Personal Information")
         name = st.text_input("Full Name", user_data.get("username", "") if user_data else "")
-        gender = st.selectbox("Gender", ["Male", "Female", "Other"], index=["male", "female", "other"].index(user_data["gender"].lower()) if user_data else 0)
-        age = st.number_input("Age", min_value=1, max_value=120, value=user_data.get("age", 30) if user_data else 30)
-        height = st.number_input("Height (cm)", min_value=100, max_value=250, value=int(user_data.get("height", 5) * 30.48) if user_data else 170)
-        weight = st.number_input("Weight (kg)", min_value=30, max_value=300, value=user_data.get("weight", 70) if user_data else 70)
-        activity_level = st.selectbox("Activity Level", ["Sedentary", "Lightly active", "Moderately active", "Very active"],
-                                      index={"sedentary": 0, "light": 1, "moderate": 2, "very active": 3}.get(user_data.get("activity_level", "light").lower(), 1) if user_data else 0)
+        gender = st.selectbox("Gender", ["Male", "Female", "Other"],
+                              index=["male", "female", "other"].index(user_data["gender"].lower()) if user_data else 0)
+        age = st.number_input("Age", value=user_data.get("age", 30) if user_data else 30)
+        height = st.number_input("Height (cm)", value=user_data.get("height", 170) if user_data else 170)
+        weight = st.number_input("Weight (kg)", value=user_data.get("weight", 70) if user_data else 70)
+        activity_level = st.selectbox("Activity Level",
+                                      ["Sedentary", "Lightly active", "Moderately active", "Very active"],
+                                      index={"sedentary": 0, "light": 1, "moderate": 2, "very active": 3}
+                                      .get(user_data.get("activity_level", "light").lower(), 1) if user_data else 0)
 
     with col2:
         st.subheader("Dietary Preferences")
         goal = st.selectbox("Goal", ["weight-loss", "Weight maintenance", "Muscle gain", "Improve health"],
-                            index=["weight-loss", "weight maintenance", "muscle gain", "improve health"].index(user_data.get("goal", "Weight loss").lower()) if user_data else 0)
+                            index=["weight-loss", "weight maintenance", "muscle gain", "improve health"]
+                            .index(user_data.get("goal", "Weight loss").lower()) if user_data else 0)
         diet_pref = st.selectbox("Dietary Preference", ["No restrictions", "Vegetarian", "Vegan", "Gluten-free"],
-                                 index={"no restrictions": 0, "vegetarian": 1, "vegan": 2, "gluten-free": 3}.get(user_data.get("diet_pref", "Vegetarian").lower(), 1) if user_data else 0)
+                                 index={"no restrictions": 0, "vegetarian": 1, "vegan": 2, "gluten-free": 3}
+                                 .get(user_data.get("diet_pref", "Vegetarian").lower(), 1) if user_data else 0)
         allergies = st.text_input("Allergies", user_data.get("allergies", "") if user_data else "")
         medical_conditions = st.text_input("Medical Conditions", user_data.get("medical_conditions", "") if user_data else "")
         budget_level = st.selectbox("Budget Level", ["Low", "Medium", "High"],
-                                    index={"low": 0, "medium": 1, "high": 2}.get(user_data.get("budget_level", "Medium").lower(), 1) if user_data else 1)
-        days = st.number_input("Number of Days for Plan", min_value=1, max_value=14, value=user_data.get("days", 7) if user_data else 7)
+                                    index={"low": 0, "medium": 1, "high": 2}
+                                    .get(user_data.get("budget_level", "Medium").lower(), 1) if user_data else 1)
+        days = st.number_input("Number of Days for Plan", value=user_data.get("days", 7) if user_data else 7)
 
     submitted = st.form_submit_button("Generate Plan", type="primary")
 
